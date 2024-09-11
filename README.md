@@ -1,4 +1,8 @@
-# despesas_pessoais
+# APP para Despesas Pessoais
+
+Um aplicativo gratuito que sincroniza os lançamentos da conta bancária e categoriza automaticamente os gastos.
+
+Porjeto em andamento...
 
 A new Flutter project.
 
