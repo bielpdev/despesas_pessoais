@@ -1,4 +1,4 @@
-# APP para Despezas Pessoais
+# APP para Despesas Pessoais
 
 Um aplicativo gratuito que sincroniza os lançamentos da conta bancária e categoriza automaticamente os gastos.
 
