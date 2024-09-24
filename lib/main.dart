@@ -32,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [];
+  bool showchart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -72,33 +73,79 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 18, 99, 175),
-        actions: [
+    bool IsLandScape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    final appBar = AppBar(
+      backgroundColor: const Color.fromARGB(255, 18, 99, 175),
+      actions: [
+        if (IsLandScape)
           IconButton(
-              onPressed: () => openTransactionFormModal(context),
-              icon: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ))
-        ],
-        title: const Center(
-          child: Text(
-            'Despesas Pessoas',
-            style: TextStyle(color: Colors.white),
+            onPressed: () {
+              setState(() {
+                showchart = !showchart;
+              });
+            },
+            icon: Icon(
+              showchart ? Icons.list : Icons.show_chart,
+              color: Colors.white,
+            ),
+          ),
+        IconButton(
+          onPressed: () => openTransactionFormModal(context),
+          icon: const Icon(
+            Icons.add,
+            color: Colors.white,
           ),
         ),
+      ],
+      title: const Center(
+        child: Text(
+          'Despesas Pessoas',
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
       ),
+    );
+
+    final availableHeight = MediaQuery.sizeOf(context).height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(_recentTransactions),
-            TransactionList(
-              _transactions,
-              _removeTransaction,
-            )
+            // if (IsLandScape)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       const Text('Exibir Grafico '),
+            //       Switch(
+            //         focusColor: Colors.blue,
+            //         value: showchart,
+            //         onChanged: (value) {
+            //           setState(() {
+            //             showchart = value;
+            //           });
+            //         },
+            //       ),
+            //     ],
+            //   ),
+            if (showchart || !IsLandScape)
+              SizedBox(
+                  height: availableHeight * (IsLandScape ? 0.8 : 0.30),
+                  child: Chart(_recentTransactions)),
+            if (!showchart || !IsLandScape)
+              SizedBox(
+                height: availableHeight * (IsLandScape ? 1 : 0.7),
+                child: TransactionList(
+                  _transactions,
+                  _removeTransaction,
+                ),
+              )
           ],
         ),
       ),

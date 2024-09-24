@@ -47,50 +47,56 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              onSubmitted: (_) => submitForm,
-              controller: titleController,
-              decoration: const InputDecoration(
-                labelText: 'Titulo',
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+              top: 10,
+              right: 10,
+              left: 10,
+              bottom: 10 + MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            children: [
+              TextField(
+                onSubmitted: (_) => submitForm,
+                controller: titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Titulo',
+                ),
               ),
-            ),
-            TextField(
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => submitForm,
-              controller: valueController,
-              decoration: const InputDecoration(
-                labelText: 'Valor (R\$)',
+              TextField(
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (_) => submitForm,
+                controller: valueController,
+                decoration: const InputDecoration(
+                  labelText: 'Valor (R\$)',
+                ),
               ),
-            ),
-            SizedBox(
-              height: 70,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'Nenhuma data selecionada'
-                          : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate)}',
+              SizedBox(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'Nenhuma data selecionada'
+                            : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate)}',
+                      ),
                     ),
-                  ),
-                  ElevatedButton(
-                      onPressed: _showDatePicker,
-                      child: const Text('Selecionar Data'))
-                ],
+                    ElevatedButton(
+                        onPressed: _showDatePicker,
+                        child: const Text('Selecionar Data'))
+                  ],
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: submitForm,
-              child: const Text('Nova Transação'),
-            )
-          ],
+              ElevatedButton(
+                onPressed: submitForm,
+                child: const Text('Nova Transação'),
+              )
+            ],
+          ),
         ),
       ),
     );
