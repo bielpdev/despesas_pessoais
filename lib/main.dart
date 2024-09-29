@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:despesas_pessoais/components/charts.dart';
 import 'package:despesas_pessoais/components/transaction_form.dart';
 import 'package:despesas_pessoais/components/transaction_list.dart';
 import 'package:despesas_pessoais/models/transaction.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 main() => runApp(const ExpensesApp());
@@ -73,8 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool IsLandScape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    bool IsLandScape = mediaQuery.orientation == Orientation.landscape;
     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     final appBar = AppBar(
@@ -110,54 +112,126 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final availableHeight = MediaQuery.sizeOf(context).height -
         appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
+        mediaQuery.padding.top;
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // if (IsLandScape)
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       const Text('Exibir Grafico '),
-            //       Switch(
-            //         focusColor: Colors.blue,
-            //         value: showchart,
-            //         onChanged: (value) {
-            //           setState(() {
-            //             showchart = value;
-            //           });
-            //         },
-            //       ),
-            //     ],
-            //   ),
-            if (showchart || !IsLandScape)
-              SizedBox(
-                  height: availableHeight * (IsLandScape ? 0.8 : 0.30),
-                  child: Chart(_recentTransactions)),
-            if (!showchart || !IsLandScape)
-              SizedBox(
-                height: availableHeight * (IsLandScape ? 1 : 0.7),
-                child: TransactionList(
-                  _transactions,
-                  _removeTransaction,
-                ),
-              )
-          ],
-        ),
+    final bodyPage = SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (showchart || !IsLandScape)
+            SizedBox(
+                height: availableHeight * (IsLandScape ? 0.8 : 0.30),
+                child: Chart(_recentTransactions)),
+          if (!showchart || !IsLandScape)
+            SizedBox(
+              height: availableHeight * (IsLandScape ? 1 : 0.7),
+              child: TransactionList(
+                _transactions,
+                _removeTransaction,
+              ),
+            )
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () => openTransactionFormModal(context),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+
+    Widget getButtonIcon(IconData icon, Function() fn) {
+      return Platform.isIOS
+          ? GestureDetector(
+              onTap: fn,
+              child: Icon(icon),
+            )
+          : IconButton(onPressed: fn, icon: Icon(icon));
+    }
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              middle: const Text("Despesas Pessoais"),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // if (IsLandScape)
+                  //   Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       const Text('Exibir Grafico '),
+                  //       Switch(
+                  //         focusColor: Colors.blue,
+                  //         value: showchart,
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             showchart = value;
+                  //           });
+                  //         },
+                  //       ),
+                  //     ],
+                  //   ),
+                  if (showchart || !IsLandScape)
+                    SizedBox(
+                        height: availableHeight * (IsLandScape ? 0.8 : 0.30),
+                        child: Chart(_recentTransactions)),
+                  if (!showchart || !IsLandScape)
+                    SizedBox(
+                      height: availableHeight * (IsLandScape ? 1 : 0.7),
+                      child: TransactionList(
+                        _transactions,
+                        _removeTransaction,
+                      ),
+                    )
+                ],
+              ),
+            ),
+            child: bodyPage,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // if (IsLandScape)
+                  //   Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       const Text('Exibir Grafico '),
+                  //       Switch(
+                  //         focusColor: Colors.blue,
+                  //         value: showchart,
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             showchart = value;
+                  //           });
+                  //         },
+                  //       ),
+                  //     ],
+                  //   ),
+                  if (showchart || !IsLandScape)
+                    SizedBox(
+                        height: availableHeight * (IsLandScape ? 0.8 : 0.30),
+                        child: Chart(_recentTransactions)),
+                  if (!showchart || !IsLandScape)
+                    SizedBox(
+                      height: availableHeight * (IsLandScape ? 1 : 0.7),
+                      child: TransactionList(
+                        _transactions,
+                        _removeTransaction,
+                      ),
+                    )
+                ],
+              ),
+            ),
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    backgroundColor: Colors.blue,
+                    onPressed: () => openTransactionFormModal(context),
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
   }
 }
