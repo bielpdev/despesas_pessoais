@@ -1,3 +1,6 @@
+import 'package:despesas_pessoais/components/adaptative_button.dart';
+import 'package:despesas_pessoais/components/adaptative_datepicker.dart';
+import 'package:despesas_pessoais/components/adaptative_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -58,42 +61,31 @@ class _TransactionFormState extends State<TransactionForm> {
               bottom: 10 + MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             children: [
-              TextField(
-                onSubmitted: (_) => submitForm,
+              AdaptativeTextfield(
+                keyBoardType: TextInputType.text,
+                label: 'Titulo',
                 controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Titulo',
-                ),
+                onSubmitted: (_) => submitForm,
               ),
-              TextField(
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+              AdaptativeTextfield(
+                label: 'Valor (R\$)',
                 onSubmitted: (_) => submitForm,
                 controller: valueController,
-                decoration: const InputDecoration(
-                  labelText: 'Valor (R\$)',
-                ),
+                keyBoardType: TextInputType.numberWithOptions(decimal: true),
               ),
-              SizedBox(
-                height: 70,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _selectedDate == null
-                            ? 'Nenhuma data selecionada'
-                            : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate)}',
-                      ),
-                    ),
-                    ElevatedButton(
-                        onPressed: _showDatePicker,
-                        child: const Text('Selecionar Data'))
-                  ],
-                ),
-              ),
-              ElevatedButton(
-                onPressed: submitForm,
-                child: const Text('Nova Transação'),
+              AdaptativeDatepicker(
+                  selectedDate: _selectedDate,
+                  onDateChanged: (newDate) {
+                    setState(() {
+                      _selectedDate = newDate;
+                    });
+                  }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  AdaptativeButton(
+                      label: 'Nova Transação', onPressed: () => submitForm),
+                ],
               )
             ],
           ),

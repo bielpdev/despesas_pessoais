@@ -73,38 +73,45 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  Widget getButtonIcon(IconData icon, Function() fn) {
+    return Platform.isIOS
+        ? GestureDetector(
+            onTap: fn,
+            child: Icon(icon),
+          )
+        : IconButton(
+            onPressed: fn,
+            icon: Icon(icon),
+            color: Colors.white,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     bool IsLandScape = mediaQuery.orientation == Orientation.landscape;
     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    final iconList = Platform.isIOS ? CupertinoIcons.refresh : Icons.list;
+    final chartList =
+        Platform.isIOS ? CupertinoIcons.refresh : Icons.show_chart;
 
     final appBar = AppBar(
       backgroundColor: const Color.fromARGB(255, 18, 99, 175),
       actions: [
         if (IsLandScape)
-          IconButton(
-            onPressed: () {
-              setState(() {
-                showchart = !showchart;
-              });
-            },
-            icon: Icon(
-              showchart ? Icons.list : Icons.show_chart,
-              color: Colors.white,
-            ),
-          ),
-        IconButton(
-          onPressed: () => openTransactionFormModal(context),
-          icon: const Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
+          getButtonIcon(showchart ? iconList : chartList, () {
+            setState(() {
+              showchart = !showchart;
+            });
+          }),
+        getButtonIcon(
+          Platform.isIOS ? CupertinoIcons.add : Icons.add,
+          () => openTransactionFormModal(context),
         ),
       ],
       title: const Center(
         child: Text(
-          'Despesas Pessoas',
+          'Despesas Pessoais',
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
       ),
@@ -114,34 +121,27 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar.preferredSize.height -
         mediaQuery.padding.top;
 
-    final bodyPage = SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (showchart || !IsLandScape)
-            SizedBox(
-                height: availableHeight * (IsLandScape ? 0.8 : 0.30),
-                child: Chart(_recentTransactions)),
-          if (!showchart || !IsLandScape)
-            SizedBox(
-              height: availableHeight * (IsLandScape ? 1 : 0.7),
-              child: TransactionList(
-                _transactions,
-                _removeTransaction,
-              ),
-            )
-        ],
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (showchart || !IsLandScape)
+              SizedBox(
+                  height: availableHeight * (IsLandScape ? 0.8 : 0.30),
+                  child: Chart(_recentTransactions)),
+            if (!showchart || !IsLandScape)
+              SizedBox(
+                height: availableHeight * (IsLandScape ? 1 : 0.7),
+                child: TransactionList(
+                  _transactions,
+                  _removeTransaction,
+                ),
+              )
+          ],
+        ),
       ),
     );
-
-    Widget getButtonIcon(IconData icon, Function() fn) {
-      return Platform.isIOS
-          ? GestureDetector(
-              onTap: fn,
-              child: Icon(icon),
-            )
-          : IconButton(onPressed: fn, icon: Icon(icon));
-    }
 
     return Platform.isIOS
         ? CupertinoPageScaffold(
