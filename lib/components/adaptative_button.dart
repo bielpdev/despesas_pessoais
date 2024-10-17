@@ -10,14 +10,14 @@ class AdaptativeButton extends StatelessWidget {
 final Function onPressed;
 
   const AdaptativeButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
-  }) : super(key: key);
+  });
   
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ? CupertinoButton(padding: EdgeInsets.symmetric(horizontal: 20),
+    return Platform.isIOS ? CupertinoButton(padding: const EdgeInsets.symmetric(horizontal: 20),
     onPressed: onPressed(), 
     child: Text(label),
     ) : ElevatedButton(onPressed: onPressed(), 

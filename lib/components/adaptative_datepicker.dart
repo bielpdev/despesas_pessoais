@@ -9,12 +9,12 @@ class AdaptativeDatepicker extends StatelessWidget {
   final DateTime selectedDate;
   final Function(DateTime) onDateChanged;
   const AdaptativeDatepicker({
-    Key? key,
+    super.key,
     required this.selectedDate,
     required this.onDateChanged,
-  }) : super(key: key);
-
-  @override
+  });
+  
+ @override
   Widget build(BuildContext context) {
     _showDatePicker(BuildContext context) {
       showDatePicker(
@@ -30,7 +30,7 @@ class AdaptativeDatepicker extends StatelessWidget {
     }
 
     return Platform.isIOS
-        ? Container(height: 180,
+        ? SizedBox(height: 180,
           child: CupertinoDatePicker(
             mode: CupertinoDatePickerMode.date, onDateTimeChanged: onDateChanged, minimumDate: DateTime(2019),
             initialDateTime: DateTime.now(), maximumDate: DateTime.now(),
